@@ -1,0 +1,64 @@
+spring:
+  main:
+    banner-mode: "off"
+  profiles:
+    active: loc
+
+  output:
+    ansi:
+      enabled: always
+logging:
+  level:
+    # Enabling trace for app specific logging.
+    com.pnc: INFO
+    org.springframework: INFO
+    org.springframework.batch: INFO
+    org.springframework.boot: WARN
+    springfox.documentation: WARN
+
+
+---
+spring:
+  profiles: customer
+schemas:
+  customer:
+    url: jdbc:mysql://localhost:3306/schema_customer_cb?verifyServerCertificate=false&useSSL=true
+    username: root
+    password:
+
+---
+spring:
+  profiles: loc
+schemas:
+  loc:
+    url: jdbc:mysql://localhost:3306/schema_loc_account_cb?verifyServerCertificate=false&useSSL=true
+    username: root
+    password:
+
+---
+spring:
+  profiles: loan
+schemas:
+  loan:
+    url: jdbc:mysql://localhost:3306/schema_loan_account_cb?verifyServerCertificate=false&useSSL=true
+    username: root
+    password:
+
+
+---
+spring:
+  profiles: investment
+schemas:
+  investment:
+    url: jdbc:mysql://localhost:3306/schema_investment_account_cb?verifyServerCertificate=false&useSSL=true
+    username: root
+    password:
+
+---
+spring:
+  profiles: deposit
+schemas:
+  deposit:
+    url: jdbc:mysql://localhost:3306/schema_deposit_account_cb?verifyServerCertificate=false&useSSL=true
+    username: root
+    password:
