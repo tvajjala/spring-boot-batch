@@ -1,9 +1,12 @@
 package com.tvajjala.batch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * DataStore project using spring dataStore
@@ -21,15 +24,19 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class Application implements CommandLineRunner {
 
+    static Logger LOG = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
 
-        System.setProperty("spring.batch.job.names", "NONE");//default disable no jobs
+        //args  System.setProperty("spring.batch.job.names", "NONE");//default disable no jobs
         //replace NONE with specific job u want to run
         SpringApplication application = new SpringApplication(Application.class);
 
-        application.run(args);//java -jar spring-boot-batch-1.0.jar --spring.batch.job.names=customerJob
 
+        // LOG.info("Running with args {}", Arrays.toString(args));
+
+        ConfigurableApplicationContext ctx = application.run(args);//java -jar spring-boot-batch-1.0.jar --spring.batch.job.names=customerJob
+        // LOG.info("Ctx {} ", ctx.getEnvironment().getSystemProperties());
     }
 
 

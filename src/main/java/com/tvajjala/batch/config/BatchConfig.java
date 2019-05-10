@@ -4,7 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 
 import javax.sql.DataSource;
 
@@ -23,6 +29,24 @@ public class BatchConfig extends DefaultBatchConfigurer {
     public void setDataSource(DataSource customerDataSource) {
         //super.setDataSource(dataSource);//enable this to persist batch processing state
         LOG.info("Disable DataSource configuration");//
+    }
+
+
+    @Bean
+    public JobLauncher jobLauncher(final JobRepository jobRepository, final TaskExecutor taskExecutor) {
+        final SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+        jobLauncher.setJobRepository(jobRepository);
+        jobLauncher.setTaskExecutor(taskExecutor);
+        return jobLauncher;
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
+        taskExecutor.setDaemon(true);
+        taskExecutor.setThreadNamePrefix("Batch");
+        taskExecutor.setThreadPriority(Thread.MIN_PRIORITY);
+        return taskExecutor;
     }
 
 

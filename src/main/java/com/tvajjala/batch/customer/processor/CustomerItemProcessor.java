@@ -12,11 +12,12 @@ import org.springframework.batch.item.ItemProcessor;
  */
 public class CustomerItemProcessor implements ItemProcessor<Customer, Customer> {
 
-    Logger LOG= LoggerFactory.getLogger(getClass());
+    Logger LOG = LoggerFactory.getLogger(getClass());
+
     @Override
     public Customer process(Customer customer) {
 
-        LOG.info("Processing customer {} ",customer);
+        LOG.info("Processing customer {} ", customer);
 
         return customer;
     }
