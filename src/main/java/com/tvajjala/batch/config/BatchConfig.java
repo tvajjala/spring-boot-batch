@@ -1,5 +1,6 @@
 package com.tvajjala.batch.config;
 
+import com.tvajjala.batch.config.beans.AsyncJobLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
@@ -7,6 +8,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -17,24 +19,24 @@ import javax.sql.DataSource;
 /**
  * SpringBoot Batch Configuration without batch database tables
  *
- * @author ThirupathiReddy Vajjala
+ * @author ThirupathiReddy Vajjala DefaultBatchConfigurer
  */
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig extends DefaultBatchConfigurer {
 
-    Logger LOG = LoggerFactory.getLogger(getClass());
+    private Logger LOG = LoggerFactory.getLogger(getClass());
 
-    @Override
-    public void setDataSource(DataSource customerDataSource) {
-        //super.setDataSource(dataSource);//enable this to persist batch processing state
-        LOG.info("Disable DataSource configuration");//
+
+    @Autowired
+    public BatchConfig(DataSource dataSource) {
+        setDataSource(dataSource);
     }
 
 
     @Bean
     public JobLauncher jobLauncher(final JobRepository jobRepository, final TaskExecutor taskExecutor) {
-        final SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
+        final SimpleJobLauncher jobLauncher = new AsyncJobLauncher();
         jobLauncher.setJobRepository(jobRepository);
         jobLauncher.setTaskExecutor(taskExecutor);
         return jobLauncher;
@@ -42,8 +44,9 @@ public class BatchConfig extends DefaultBatchConfigurer {
 
     @Bean
     public TaskExecutor taskExecutor() {
+        LOG.info("Creating new Task Executor");
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
-        taskExecutor.setDaemon(true);
+        taskExecutor.setDaemon(false);
         taskExecutor.setThreadNamePrefix("Batch");
         taskExecutor.setThreadPriority(Thread.MIN_PRIORITY);
         return taskExecutor;

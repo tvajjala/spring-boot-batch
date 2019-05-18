@@ -52,21 +52,13 @@ public class CustomerBatchConfig {
                 .build();
     }
 
-
-    /**
-     * other job
-     *
-     * @return job
-     */
     @Bean
     public Job userJob() {
         return jobBuilderFactory
                 .get("userJob")
-                .incrementer(new RunIdIncrementer())
-                .start(userStep())
+                .start(customerStep())
                 .build();
     }
-
 
     /**
      * Each Step contains three stages
@@ -79,36 +71,9 @@ public class CustomerBatchConfig {
                 .get("populateCustomer")
                 .chunk(CHUNK)
                 .reader(customerItemReader())
-                .processor(processor())
+                .processor(customerProcessor())
                 .writer(customerDBWriter())
                 .exceptionHandler((context, throwable) -> LOGGER.error("  {} ", throwable.getMessage()))
-                .build();
-    }
-
-    @Bean
-    public Step userStep() {
-        return stepBuilderFactory
-                .get("userRead")
-                .chunk(CHUNK)
-                .reader(userItemReader())
-                .processor(userProcessor())
-                .writer(userDBWriter())
-                .exceptionHandler((context, throwable) -> LOGGER.error("  {} ", throwable.getMessage()))
-                .build();
-    }
-
-
-    @Bean
-    public FlatFileItemReader<Customer> userItemReader() {
-        return new FlatFileItemReaderBuilder<Customer>()
-                .name("userItemReader")
-                .resource(new ClassPathResource("user.csv"))
-                .delimited()
-                .names(new String[]{"id", "username"})
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<Customer>() {{
-                    setTargetType(Customer.class);
-                }})
-                .linesToSkip(1)// first line CSV file contains headers but not actual data
                 .build();
     }
 
@@ -133,23 +98,12 @@ public class CustomerBatchConfig {
 
 
     @Bean
-    ItemWriter<? super Customer> userDBWriter() {
-        return new CustomerWriter();
-    }
-
-    @Bean
     ItemWriter<? super Customer> customerDBWriter() {
         return new CustomerWriter();
     }
 
     @Bean
-    public ItemProcessor processor() {
-        return new CustomerItemProcessor();
-    }
-
-
-    @Bean
-    public ItemProcessor userProcessor() {
+    public ItemProcessor customerProcessor() {
         return new CustomerItemProcessor();
     }
 

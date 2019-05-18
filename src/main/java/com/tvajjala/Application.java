@@ -1,11 +1,10 @@
-package com.tvajjala.batch;
+package com.tvajjala;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
@@ -21,14 +20,14 @@ import org.springframework.context.ConfigurableApplicationContext;
  *
  * @author ThirupathiReddy Vajjala
  */
-@SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@SpringBootApplication
 public class Application implements CommandLineRunner {
 
     static Logger LOG = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
 
-        //args  System.setProperty("spring.batch.job.names", "NONE");//default disable no jobs
+        System.setProperty("spring.batch.job.names", "NONE");//default disable no jobs
         //replace NONE with specific job u want to run
         SpringApplication application = new SpringApplication(Application.class);
 

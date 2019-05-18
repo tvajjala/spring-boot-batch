@@ -16,4 +16,5 @@ logging:
 
   batch:
     job:
-      enabled: false #disable spring batch jobs by default
+      enabled: false #disable spring batch jobs by default not working
+
